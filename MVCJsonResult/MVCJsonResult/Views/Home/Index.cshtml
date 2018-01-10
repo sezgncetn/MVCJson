@@ -1,0 +1,71 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8"></br></br>
+                <textarea id="CommentText" class="form-control" placeholder="Yorum Yazınız"></textarea></br>
+                </br>
+                <button onclick="SendComment()" class="btn btn-primary">Yorum Yap</button>
+            </div> </br></br>
+        </div>
+        <!-- PANEL KISMI BURASI-->
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Yorumlar
+            </div>
+            <div class="panel-body" id="yorum">
+                @foreach (var item in Model)
+                {
+                    <div>
+                        <p>@item.Text+</p>
+                        <span style="font-weight:bold">Yorum Yapan: @item.User.UserName</span>
+                    </div><hr />
+                }
+            </div>
+        </div>
+
+    </div>
+ 
+    
+    <script src="~/Scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script>
+        var counter = @ViewBag.LastID;
+
+        function SendComment()
+        {
+            var value = $("#CommentText").val();
+            var obj = new Object();
+            obj.Text = value;
+            obj.ID = ++counter;
+            obj.PostDate = new Date();
+            obj.User = new Object();
+            obj.User.UserName = "Guest" + counter;
+            obj.User.ID = counter;
+
+            $.ajax({
+                url: "/Home/PostComment",
+                type: "post",
+                data: obj,
+                success: function (response)
+                {
+                    $("#yorum").prepend(
+                        "<div>"+"<p>"+response.Text+"</p>"+"<span style='font-weight:bold' >Yorum Yapan :" + response.User.UserName + "<span>" +"</div>"+"<hr />")
+                }
+            })
+        }
+    </script>
+</body>
+</html>

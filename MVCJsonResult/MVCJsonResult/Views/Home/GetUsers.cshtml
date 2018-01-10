@@ -1,0 +1,89 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>GetUsers</title>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <!--ARama Bölümüüüüü-->
+        <div class="row">
+            <div class="col-md-6">
+                <input class="form-control"  id="inpt" type="text" name="name" value="" placeholder="Arama Yapınız" />
+            </div>
+
+            <div class="col-md-6">
+                <button onclick="Search()">ARA</button>
+            </div>
+        </div>
+
+
+        <table class="table table-responsive table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        Kullanıcı Adı
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>
+                            @item.UserName
+                        </td>
+                        <td>
+                            @item.Email
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <script src="~/Scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+    <script>
+        function Search() {
+            var value = $("#inpt").val();
+            $.ajax(
+                {
+                    url: "/Home/SearchFor?searchText=" + value,
+                    type: "get",
+                    success: function (response) {
+
+                        console.log(response);
+
+                        $("table tbody").hide();
+                        $("table tbody").empty();
+
+                        var html = null;
+                        $.each(response, function (index, item) {
+                            html += 
+                                "<tr>" + "<td>" + item.UserName + "</td>" +
+                                "<td>" + item.Email + "</td>" + "</tr>"
+
+                        })
+                        $("table tbody").append(html);
+                        $("table tbody").fadeIn();
+
+                    }
+                })
+
+        }
+    </script>
+
+</body>
+</html>
